@@ -26,7 +26,6 @@ from operator import itemgetter
 from mako.template import Template
 
 
-from openerp.modules.module import get_module_resource
 from openerp import pooler
 from openerp.osv import osv
 from openerp.report import report_sxw
@@ -34,6 +33,7 @@ from openerp.tools.translate import _
 from openerp.addons.report_webkit import report_helper
 from .common_partner_reports import CommonPartnersReportHeaderWebkit
 from .webkit_parser_header_fix import HeaderFooterTextWebKitParser
+from openerp.modules.module import get_module_resource
 
 
 def get_mako_template(obj, *args):
@@ -55,8 +55,8 @@ class PartnersOpenInvoicesWebkit(report_sxw.rml_parse,
         company = self.pool.get('res.users').browse(
             self.cr, uid, uid, context=context).company_id
         header_report_name = ' - '.join((_('OPEN INVOICES REPORT'),
-                                         company.name,
-                                         company.currency_id.name))
+                                        company.name,
+                                        company.currency_id.name))
 
         footer_date_time = self.formatLang(
             str(datetime.today()), date_time=True)
@@ -145,28 +145,35 @@ class PartnersOpenInvoicesWebkit(report_sxw.rml_parse,
         ledger_lines_memoizer = self._compute_open_transactions_lines(
             account_ids, main_filter, target_move, start, stop, date_until,
             partner_filter=partner_ids)
-        objects = []
-        for account in self.pool.get('account.account').browse(
-                self.cursor, self.uid, account_ids, self.localcontext):
-            account.ledger_lines = ledger_lines_memoizer.get(account.id, {})
-            account.init_balance = init_balance_memoizer.get(account.id, {})
+        objects = self.pool.get('account.account').browse(self.cursor,
+                                                          self.uid,
+                                                          account_ids)
+
+        ledger_lines = {}
+        init_balance = {}
+        partners_order = {}
+        for account in objects:
+            ledger_lines[account.id] = ledger_lines_memoizer.get(account.id,
+                                                                 {})
+            init_balance[account.id] = init_balance_memoizer.get(account.id,
+                                                                 {})
             # we have to compute partner order based on inital balance
             # and ledger line as we may have partner with init bal
             # that are not in ledger line and vice versa
             ledg_lines_pids = ledger_lines_memoizer.get(account.id, {}).keys()
             non_null_init_balances = dict([
                 (ib, amounts) for ib, amounts
-                in account.init_balance.iteritems()
+                in init_balance[account.id].iteritems()
                 if amounts['init_balance']
                 or amounts['init_balance_currency']])
             init_bal_lines_pids = non_null_init_balances.keys()
 
-            account.partners_order = self._order_partners(
+            partners_order[account.id] = self._order_partners(
                 ledg_lines_pids, init_bal_lines_pids)
-            account.ledger_lines = ledger_lines_memoizer.get(account.id, {})
+            ledger_lines[account.id] = ledger_lines_memoizer.get(account.id,
+                                                                 {})
             if group_by_currency:
                 self._group_lines_by_currency(account)
-            objects.append(account)
 
         self.localcontext.update({
             'fiscalyear': fiscalyear,
@@ -177,6 +184,9 @@ class PartnersOpenInvoicesWebkit(report_sxw.rml_parse,
             'date_until': date_until,
             'partner_ids': partner_ids,
             'chart_account': chart_account,
+            'ledger_lines': ledger_lines,
+            'init_balance': init_balance,
+            'partners_order': partners_order
         })
 
         return super(PartnersOpenInvoicesWebkit, self).set_context(
