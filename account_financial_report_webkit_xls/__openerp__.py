@@ -45,6 +45,11 @@
         'wizard/open_invoices_wizard_view.xml',
         'wizard/journal_wizard_view.xml',
     ],
+    'test': ['tests/general_ledger.yml',
+             'tests/partner_ledger.yml',
+             'tests/trial_balance.yml',
+             'tests/partner_balance.yml',
+             'tests/open_invoices.yml'],
     'active': False,
     'installable': True,
 }
