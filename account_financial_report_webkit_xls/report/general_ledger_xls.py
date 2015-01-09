@@ -36,6 +36,7 @@ _column_sizes = [
     ('move', 20),
     ('journal', 12),
     ('account_code', 12),
+    ('ref', 25),
     ('partner', 30),
     ('label', 45),
     ('counterpart', 30),
@@ -71,8 +72,8 @@ class general_ledger_xls(report_xls):
         # Title
         cell_style = xlwt.easyxf(_xs['xls_title'])
         report_name = ' - '.join([_p.report_name.upper(),
-                                  _p.company.partner_id.name,
-                                  _p.company.currency_id.name])
+                                 _p.company.partner_id.name,
+                                 _p.company.currency_id.name])
         c_specs = [
             ('report_name', 1, 0, 'text', report_name),
         ]
@@ -98,8 +99,8 @@ class general_ledger_xls(report_xls):
             ('df', 3, 0, 'text', _p.filter_form(data) ==
              'filter_date' and _('Dates Filter') or _('Periods Filter')),
             ('af', 1, 0, 'text', _('Accounts Filter')),
-            ('tm', 2, 0, 'text',  _('Target Moves')),
-            ('ib', 2, 0, 'text',  _('Initial Balance')),
+            ('tm', 2, 0, 'text', _('Target Moves')),
+            ('ib', 3, 0, 'text', _('Initial Balance')),
 
         ]
         row_data = self.xls_row_template(c_specs, [x[0] for x in c_specs])
@@ -164,6 +165,8 @@ class general_ledger_xls(report_xls):
             ('journal', 1, 0, 'text', _('Journal'), None, c_hdr_cell_style),
             ('account_code', 1, 0, 'text',
              _('Account'), None, c_hdr_cell_style),
+            ('ref', 1, 0, 'text',
+             _('Reference'), None, c_hdr_cell_style_right),
             ('partner', 1, 0, 'text', _('Partner'), None, c_hdr_cell_style),
             ('label', 1, 0, 'text', _('Label'), None, c_hdr_cell_style),
             ('counterpart', 1, 0, 'text',
@@ -240,6 +243,7 @@ class general_ledger_xls(report_xls):
                          None, c_init_cell_style_decimal),
                         ('cumul_bal', 1, 0, 'number', cumul_balance,
                          None, c_init_cell_style_decimal),
+                        ('ref', 1, 0, 'text', None),
                     ]
                     if _p.amount_currency(data):
                         c_specs += [
@@ -280,6 +284,7 @@ class general_ledger_xls(report_xls):
                         ('move', 1, 0, 'text', line.get('move_name') or ''),
                         ('journal', 1, 0, 'text', line.get('jcode') or ''),
                         ('account_code', 1, 0, 'text', account.code),
+                        ('ref', 1, 0, 'text', line.get('lref') or ''),
                         ('partner', 1, 0, 'text',
                          line.get('partner_name') or ''),
                         ('label', 1, 0, 'text', label),
