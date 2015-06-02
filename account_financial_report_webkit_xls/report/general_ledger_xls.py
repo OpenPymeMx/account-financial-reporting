@@ -48,6 +48,7 @@ _column_sizes = [
     ('supp_inv_no', 22),
     ('journal', 12),
     ('account_code', 12),
+    ('ref', 25),
     ('partner', 30),
     ('label', 45),
     ('counterpart', 30),
@@ -190,6 +191,8 @@ class general_ledger_xls(report_xls):
             ('journal', 1, 0, 'text', _('Journal'), None, c_hdr_cell_style),
             ('account_code', 1, 0, 'text',
              _('Account'), None, c_hdr_cell_style),
+            ('ref', 1, 0, 'text',
+             _('Reference'), None, c_hdr_cell_style_right),
             ('partner', 1, 0, 'text', _('Partner'), None, c_hdr_cell_style),
             ('label', 1, 0, 'text', _('Label'), None, c_hdr_cell_style),
             ('counterpart', 1, 0, 'text',
@@ -266,6 +269,7 @@ class general_ledger_xls(report_xls):
                          None, c_init_cell_style_decimal),
                         ('cumul_bal', 1, 0, 'number', cumul_balance,
                          None, c_init_cell_style_decimal),
+                        ('ref', 1, 0, 'text', None),
                     ]
                     if _p.amount_currency(data):
                         c_specs += [
@@ -308,6 +312,7 @@ class general_ledger_xls(report_xls):
                          line.get('supplier_invoice_number') or ''),
                         ('journal', 1, 0, 'text', line.get('jcode') or ''),
                         ('account_code', 1, 0, 'text', account.code),
+                        ('ref', 1, 0, 'text', line.get('lref') or ''),
                         ('partner', 1, 0, 'text',
                          line.get('partner_name') or ''),
                         ('label', 1, 0, 'text', label),
