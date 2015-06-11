@@ -32,7 +32,7 @@ msgstr "De"
 #: code:addons/account_financial_report_webkit_xls/report/trial_balance_xls.py:52
 #, python-format
 msgid "No"
-msgstr "No"
+msgstr "No."
 
 #. module: account_financial_report_webkit_xls
 #: code:addons/account_financial_report_webkit_xls/report/open_invoices_xls.py:165
@@ -445,7 +445,7 @@ msgstr "Filtros por fechas"
 #: code:addons/account_financial_report_webkit_xls/report/partner_ledger_xls.py:247
 #, python-format
 msgid "No Partner"
-msgstr "Sin Empresa"
+msgstr "Sin empresa"
 
 #. module: account_financial_report_webkit_xls
 #: code:addons/account_financial_report_webkit_xls/report/general_ledger_xls.py:163
@@ -491,5 +491,4 @@ msgstr "Este reporte permite generar el reporte de las facturas abiertas en pdf 
 #: code:addons/account_financial_report_webkit_xls/report/trial_balance_xls.py:51
 #, python-format
 msgid "Opening Entries"
-msgstr "Asientos de Apertura"
-
+msgstr "Asientos de apertura"
