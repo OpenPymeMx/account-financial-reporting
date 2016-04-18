@@ -37,11 +37,11 @@ from functools import partial
 from mako import exceptions
 from openerp.osv.osv import except_osv
 from openerp.tools.translate import _
-from openerp import addons
 from openerp import pooler
 from openerp import tools
 from openerp.addons.report_webkit import webkit_report
 from openerp.addons.report_webkit.report_helper import WebKitHelper
+from openerp.modules.module import get_module_resource
 
 _logger = logging.getLogger('financial.reports.webkit')
 
@@ -205,7 +205,7 @@ class HeaderFooterTextWebKitParser(webkit_report.WebKitParser):
         template = False
 
         if report_xml.report_file:
-            path = addons.get_module_resource(
+            path = get_module_resource(
                 *report_xml.report_file.split(os.path.sep))
             if os.path.exists(path):
                 template = file(path).read()
