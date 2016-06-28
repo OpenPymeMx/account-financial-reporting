@@ -334,6 +334,11 @@ class CommonReportHeaderWebkit(common_report_header):
                     ('date_start', '>=', opening_period_br.date_stop)]
 
         periods_search = [('date_stop', '<=', start_period.date_stop)]
+        # TODO: Temporal hack for make the module works with extra special
+        # periods added at the end of the fiscal year for hold the
+        # account moves needed for close the fiscal year using module
+        # l10n_es_fiscal_year_closing
+        periods_search += [('date_start', '<', start_period.date_stop)]
         periods_search += past_limit
 
         if not include_opening:
